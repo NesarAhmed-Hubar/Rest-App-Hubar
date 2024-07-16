@@ -3,6 +3,8 @@ package com.hubartech.rest_app.service;
 import com.hubartech.rest_app.dto.UserDto;
 import com.hubartech.rest_app.enums.UserRole;
 import com.hubartech.rest_app.model.User;
+import com.hubartech.rest_app.model.UserInfo;
+import com.hubartech.rest_app.repository.UserInfoRepository;
 import com.hubartech.rest_app.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,14 +22,16 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final UserInfoRepository userInfoRepository;
 
     public AuthenticationService(UserRepository userRepository,
                                  PasswordEncoder passwordEncoder, JwtService jwtService,
-                                 AuthenticationManager authenticationManager) {
+                                 AuthenticationManager authenticationManager, UserInfoRepository userInfoRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
+        this.userInfoRepository = userInfoRepository;
     }
 
     public boolean isValidReg(UserDto userDto) {
@@ -48,6 +52,11 @@ public class AuthenticationService {
                 user.setPassword(passwordEncoder.encode(userDto.getPassword()));
                 user.setRole(UserRole.USER);
                 userRepository.save(user);
+
+                UserInfo userInfo = new UserInfo();
+                userInfo.setUser(user);
+                userInfoRepository.save(userInfo);
+
                 response.put("message", "Registration successful.");
                 return new ResponseEntity<>(response, HttpStatus.CREATED);
             } catch (Exception e) {
