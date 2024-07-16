@@ -2,7 +2,6 @@ package com.hubartech.rest_app.controller;
 
 import com.hubartech.rest_app.dto.AddressDto;
 import com.hubartech.rest_app.service.AddressService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
