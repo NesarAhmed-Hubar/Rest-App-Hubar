@@ -26,6 +26,4 @@ public class AdminController {
     public ResponseEntity<?> deleteById(@RequestParam Integer userId) {
         return adminService.deleteUser(userId);
     }
-
-
 }

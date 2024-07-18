@@ -1,4 +1,4 @@
-CREATE TABLE users
+CREATE TABLE IF NOT EXISTS public.users
 (
     id           SERIAL PRIMARY KEY,
     email        TEXT NOT NULL UNIQUE,
@@ -7,13 +7,13 @@ CREATE TABLE users
     role         TEXT NOT NULL
 );
 
-CREATE TABLE user_info
+CREATE TABLE IF NOT EXISTS public.user_info
 (
     id      SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL UNIQUE
 );
 
-CREATE TABLE address
+CREATE TABLE IF NOT EXISTS public.address
 (
     id          SERIAL PRIMARY KEY,
     city        TEXT,
@@ -24,7 +24,7 @@ CREATE TABLE address
     state       TEXT
 );
 
-CREATE TABLE user_info_address
+CREATE TABLE IF NOT EXISTS public.user_info_address
 (
     user_info_id INTEGER NOT NULL,
     address_id   INTEGER NOT NULL
