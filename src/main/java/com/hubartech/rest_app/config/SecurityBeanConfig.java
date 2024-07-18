@@ -20,19 +20,16 @@ public class SecurityBeanConfig {
         this.userRepository = userRepository;
     }
 
-    //BcryptPasswordEncoder is a one way password encoder, so password can't be matched without original password.
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    //Providing UserDetailsService from User Model.
     @Bean
     public UserDetailsService userDetailsService() {
         return email -> userRepository.findByEmail(email);
     }
 
-    //Setting Authentication Provider as a new DaoAuthenticationProvider, with required password encoder and user details service.
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
@@ -41,7 +38,6 @@ public class SecurityBeanConfig {
         return authenticationProvider;
     }
 
-    //Creating bean for authentication manager.
     @Bean
     AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();

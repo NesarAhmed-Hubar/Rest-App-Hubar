@@ -32,6 +32,7 @@
 	<dependencies>
 
 		<!-- JWT -->
+
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
@@ -51,7 +52,6 @@
 			<version>0.12.6</version>
 			<scope>runtime</scope>
 		</dependency>
-
 
 		<!-- DevTools -->
 
@@ -74,11 +74,11 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- Spring Data JPA -->
+		<!-- JPA API -->
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
 
 		<!-- Lombok -->

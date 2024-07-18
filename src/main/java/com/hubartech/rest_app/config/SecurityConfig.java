@@ -28,17 +28,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                //csrf disabled to hit post request.
                 .csrf(csrf -> csrf.disable())
-                // Session stateless because using JWT token auth, so nothing needs to saved in session.
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                //Provided custom DAO authentication provider.
                 .authenticationProvider(authenticationProvider)
                 .authorizeHttpRequests(auth -> auth
-                        //Auth API is set to public
                         .requestMatchers(antMatcher("/api/v1/auth/**")).permitAll()
                         .anyRequest().authenticated())
-                //Jwt auth filter added in the front.
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

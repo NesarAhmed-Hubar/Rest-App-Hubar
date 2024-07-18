@@ -54,7 +54,7 @@ public class AuthenticationService {
                 userRepository.save(user);
 
                 UserInfo userInfo = new UserInfo();
-                userInfo.setUser(user);
+                userInfo.setUser(userRepository.findByEmail(userDto.getEmail()));
                 userInfoRepository.save(userInfo);
 
                 response.put("message", "Registration successful.");

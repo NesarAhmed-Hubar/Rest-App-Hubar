@@ -1,7 +1,6 @@
 package com.hubartech.rest_app.model;
 
 import com.hubartech.rest_app.enums.UserRole;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,24 +14,11 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "users")
 public class User implements UserDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
     private Integer id;
-
-    @Column(unique = true, nullable = false)
     private String email;
-
-    @Column(unique = true)
-    private String phoneNumber;
-
-    @Column(nullable = false)
     private String password;
-
-    @Column(nullable = false)
+    private String phoneNumber;
     private UserRole role;
 
     @Override
