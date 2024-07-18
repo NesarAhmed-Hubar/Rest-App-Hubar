@@ -51,11 +51,11 @@ public class AuthenticationService {
                 user.setPhoneNumber(userDto.getPhoneNumber());
                 user.setPassword(passwordEncoder.encode(userDto.getPassword()));
                 user.setRole(UserRole.USER);
-                userRepository.save(user);
+                userRepository.create(user);
 
                 UserInfo userInfo = new UserInfo();
                 userInfo.setUser(userRepository.findByEmail(userDto.getEmail()));
-                userInfoRepository.save(userInfo);
+                userInfoRepository.create(userInfo);
 
                 response.put("message", "Registration successful.");
                 return new ResponseEntity<>(response, HttpStatus.CREATED);

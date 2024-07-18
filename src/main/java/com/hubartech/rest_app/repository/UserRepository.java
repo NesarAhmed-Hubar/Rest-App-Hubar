@@ -18,9 +18,9 @@ public class UserRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public User findById(Integer id) {
-        String sql = "SELECT * FROM users WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, new UserRowMapper(), id);
+    public void create(User user) {
+        String sql = "INSERT INTO users (email, password, phone_number, role) VALUES (?, ?, ?, ?)";
+        jdbcTemplate.update(sql, user.getEmail(), user.getPassword(), user.getPhoneNumber(), user.getRole().name());
     }
 
     public User findByEmail(String email) {
@@ -31,16 +31,6 @@ public class UserRepository {
     public User findByPhoneNumber(String phoneNumber) {
         String sql = "SELECT * FROM users WHERE phone_number = ?";
         return jdbcTemplate.queryForObject(sql, new UserRowMapper(), phoneNumber);
-    }
-
-    public void save(User user) {
-        if (user.getId() == null) {
-            String sql = "INSERT INTO users (email, password, phone_number, role) VALUES (?, ?, ?, ?)";
-            jdbcTemplate.update(sql, user.getEmail(), user.getPassword(), user.getPhoneNumber(), user.getRole().name());
-        } else {
-            String sql = "UPDATE users SET email = ?, password = ?, phone_number = ?, role = ? WHERE id = ?";
-            jdbcTemplate.update(sql, user.getEmail(), user.getPassword(), user.getPhoneNumber(), user.getRole().name(), user.getId());
-        }
     }
 
     public static class UserRowMapper implements RowMapper<User> {

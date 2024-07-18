@@ -12,5 +12,5 @@ import java.util.List;
 public class UserInfo {
     private Integer id;
     private User user;
-//    private List<Address> addressList;
+    private List<Address> addressList;
 }
