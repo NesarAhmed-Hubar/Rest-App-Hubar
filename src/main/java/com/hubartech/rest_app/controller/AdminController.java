@@ -1,6 +1,5 @@
 package com.hubartech.rest_app.controller;
 
-import com.hubartech.rest_app.dto.UserDto;
 import com.hubartech.rest_app.service.AdminService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
