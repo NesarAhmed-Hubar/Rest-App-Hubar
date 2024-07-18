@@ -21,7 +21,8 @@ public class AddressService {
     private final AddressRepository addressRepository;
     private final UserInfoAddressRepository userInfoAddressRepository;
 
-    public AddressService(UserInfoRepository userInfoRepository, AddressRepository addressRepository, UserInfoAddressRepository userInfoAddressRepository) {
+    public AddressService(UserInfoRepository userInfoRepository, AddressRepository addressRepository,
+                          UserInfoAddressRepository userInfoAddressRepository) {
         this.userInfoRepository = userInfoRepository;
         this.addressRepository = addressRepository;
         this.userInfoAddressRepository = userInfoAddressRepository;
@@ -51,5 +52,65 @@ public class AddressService {
         HashMap<String, Object> response = new HashMap<>();
         response.put("massage", "Address added successfully.");
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    public ResponseEntity<?> deleteAddressById(Integer addressId, Authentication authentication) {
+        HashMap<String, Object> response = new HashMap<>();
+        User user = (User) authentication.getPrincipal();
+        UserInfo userInfo = userInfoRepository.findByUser(user);
+
+        boolean myAddress = false;
+        for (Address address : userInfo.getAddressList()) {
+            if (address.getId().equals(addressId)){
+                myAddress = true;
+                break;
+            }
+        }
+
+        if(myAddress) {
+            addressRepository.delete(addressId);
+            userInfoAddressRepository.delete(userInfo.getId(), addressId);
+            response.put("massage", "Address deleted successfully.");
+            return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+        }
+        else{
+            response.put("massage", "This address not belongs to you.");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public ResponseEntity<?> updateAddressById(AddressDto addressDto, Authentication authentication) {
+        HashMap<String, Object> response = new HashMap<>();
+        if (addressDto.getId() == null) {
+            response.put("massage", "Address not found, please provide id.");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+
+        User user = (User) authentication.getPrincipal();
+        UserInfo userInfo = userInfoRepository.findByUser(user);
+        boolean myAddress = false;
+        for (Address address : userInfo.getAddressList()) {
+            if (address.getId().equals(addressDto.getId())) {
+                myAddress = true;
+                break;
+            }
+        }
+
+        if(myAddress) {
+            Address address = addressRepository.FindById(addressDto.getId());
+            if (addressDto.getLine1() != null) address.setLine1(addressDto.getLine1());
+            if (addressDto.getLine2() != null) address.setLine2(addressDto.getLine2());
+            if (addressDto.getCity() != null) address.setCity(addressDto.getCity());
+            if (addressDto.getState() != null) address.setState(addressDto.getState());
+            if (addressDto.getCountry() != null) address.setCountry(addressDto.getCountry());
+            if (addressDto.getPostalCode() != null) address.setPostalCode(addressDto.getPostalCode());
+            addressRepository.update(address);
+            response.put("massage", "Address updated successfully.");
+            return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+        }
+        else {
+            response.put("massage", "This address not belongs to you.");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
     }
 }

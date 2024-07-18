@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 @Repository
 public class UserRepository {
@@ -21,6 +22,21 @@ public class UserRepository {
     public void create(User user) {
         String sql = "INSERT INTO users (email, password, phone_number, role) VALUES (?, ?, ?, ?)";
         jdbcTemplate.update(sql, user.getEmail(), user.getPassword(), user.getPhoneNumber(), user.getRole().name());
+    }
+
+    public void delete(Integer id) {
+        String sql = "DELETE FROM users WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
+    public List<User> findAll() {
+        String sql = "SELECT * FROM users";
+        return jdbcTemplate.query(sql, new UserRowMapper());
+    }
+
+    public User findById(Integer id) {
+        String sql = "SELECT * FROM users WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, new UserRowMapper(), id);
     }
 
     public User findByEmail(String email) {

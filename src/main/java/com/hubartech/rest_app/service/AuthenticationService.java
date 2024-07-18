@@ -42,7 +42,7 @@ public class AuthenticationService {
         return (userDto.getEmail() != null || userDto.getPhoneNumber() != null) && userDto.getPassword() != null;
     }
 
-    public ResponseEntity<?> registerUser(UserDto userDto) {
+    public ResponseEntity<?> register(UserDto userDto, UserRole userRole) {
         HashMap<String, String> response = new HashMap<>();
         if (isValidReg(userDto)) {
             try {
@@ -50,7 +50,7 @@ public class AuthenticationService {
                 user.setEmail(userDto.getEmail());
                 user.setPhoneNumber(userDto.getPhoneNumber());
                 user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-                user.setRole(UserRole.USER);
+                user.setRole(userRole);
                 userRepository.create(user);
 
                 UserInfo userInfo = new UserInfo();
@@ -75,25 +75,35 @@ public class AuthenticationService {
         if (isValidAuth(userDto)) {
             User user;
             if (userDto.getEmail() == null) {
-                user = userRepository.findByPhoneNumber(userDto.getPhoneNumber());
-                userDto.setEmail(user.getEmail());
-            } else user = userRepository.findByEmail(userDto.getEmail());
-
-            if (user != null) {
-                try {
-                    UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(userDto.getEmail(), userDto.getPassword());
-                    authenticationManager.authenticate(authToken);
-                    String token = jwtService.generateToken(user);
-                    response.put("token", token);
-                    return new ResponseEntity<>(response, HttpStatus.CREATED);
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                    response.put("message", "Invalid password.");
-                    return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+                try{
+                    user = userRepository.findByPhoneNumber(userDto.getPhoneNumber());
+                    userDto.setEmail(user.getEmail());
                 }
-            } else {
-                response.put("message", "Invalid email or phoneNumber.");
+                catch(Exception e){
+                    System.out.println(e.getMessage());
+                    response.put("message", "Invalid email or password");
+                    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+                }
+            } else{
+                try {
+                    user = userRepository.findByEmail(userDto.getEmail());
+                }
+                catch(Exception e){
+                    System.out.println(e.getMessage());
+                    response.put("message", "Invalid email or password");
+                    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+                }
+            }
+            try {
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(userDto.getEmail(), userDto.getPassword());
+                authenticationManager.authenticate(authToken);
+                String token = jwtService.generateToken(user);
+                response.put("token", token);
+                return new ResponseEntity<>(response, HttpStatus.CREATED);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                response.put("message", "Invalid password.");
                 return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
             }
         } else {

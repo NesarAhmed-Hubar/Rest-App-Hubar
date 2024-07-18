@@ -10,22 +10,33 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/address")
 public class AddressController {
-
     private final AddressService addressService;
 
     public AddressController(AddressService addressService) {
         this.addressService = addressService;
     }
 
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
     @GetMapping("/all")
     public ResponseEntity<?> getAllAddress(Authentication authentication) {
         return addressService.getMyAddress(authentication);
     }
 
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
     @PostMapping("/add")
     public ResponseEntity<?> postAddress(@RequestBody AddressDto addressDto, Authentication authentication) {
         return addressService.addAddress(addressDto, authentication);
+    }
+
+    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteAddressById(@RequestParam Integer id, Authentication authentication) {
+        return addressService.deleteAddressById(id, authentication);
+    }
+
+    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
+    @PutMapping("/update")
+    public ResponseEntity<?> updateAddressById(@RequestBody AddressDto addressDto, Authentication authentication) {
+        return addressService.updateAddressById(addressDto, authentication);
     }
 }

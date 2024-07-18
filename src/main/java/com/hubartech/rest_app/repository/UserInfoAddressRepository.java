@@ -15,4 +15,9 @@ public class UserInfoAddressRepository {
         String sql = "INSERT INTO user_info_address (user_info_id, address_id) VALUES (?, ?)";
         jdbcTemplate.update(sql, userInfoId, addressId);
     }
+
+    public void delete(int userInfoId, int addressId) {
+        String sql = "DELETE FROM user_info_address WHERE user_info_id = ? AND address_id = ?";
+        jdbcTemplate.update(sql, userInfoId, addressId);
+    }
 }

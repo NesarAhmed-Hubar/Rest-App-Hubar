@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddressDto {
+    private Integer id;
     private String line1;
     private String line2;
     private String city;

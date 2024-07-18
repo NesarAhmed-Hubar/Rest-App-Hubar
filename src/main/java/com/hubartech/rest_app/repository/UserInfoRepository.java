@@ -30,6 +30,11 @@ public class UserInfoRepository {
         return jdbcTemplate.queryForObject(sql, new UserInfoRowMapper(user, jdbcTemplate), user.getId());
     }
 
+    public void delete(Integer id){
+        String sql = "DELETE FROM user_info WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
     public static class UserInfoRowMapper implements RowMapper<UserInfo> {
         private final User user;
         private final JdbcTemplate jdbcTemplate;

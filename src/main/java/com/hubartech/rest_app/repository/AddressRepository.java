@@ -18,9 +18,27 @@ public class AddressRepository {
     }
 
     public Integer create(Address address) {
-        String sqlAddress = "INSERT INTO address (line1, line2, city, state, postal_code, country) VALUES (?, ?, ?, ?, ?, ?) RETURNING id";
-        return jdbcTemplate.queryForObject(sqlAddress, Integer.class, address.getLine1(), address.getLine2(), address.getCity(), address.getState(),
-                address.getPostalCode(), address.getCountry());
+        String sql = "INSERT INTO address (line1, line2, city, state, postal_code, country) " +
+                "VALUES (?, ?, ?, ?, ?, ?) RETURNING id";
+        return jdbcTemplate.queryForObject(sql, Integer.class, address.getLine1(), address.getLine2(),
+                address.getCity(), address.getState(), address.getPostalCode(), address.getCountry());
+    }
+
+    public void delete(Integer id) {
+        String sql = "DELETE FROM address WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
+    public Address FindById(Integer id) {
+        String sql = "SELECT * FROM address WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, new AddressRowMapper(), id);
+    }
+
+    public void update(Address address) {
+        String sql = "UPDATE address SET city = ?, country = ?, line1 = ?, line2 = ?, postal_code = ?, state = ? " +
+                "WHERE id = ?";
+        jdbcTemplate.update(sql, address.getCity(), address.getCountry(), address.getLine1(), address.getLine2(),
+                address.getPostalCode(), address.getState(), address.getId());
     }
 
     public static class AddressRowMapper implements RowMapper<Address> {
